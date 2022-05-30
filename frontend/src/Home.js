@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import './stylesheets/App.css';
 import Swimlanes from './Swimlanes';
 import Popup from './Popup';
 import NewBoat from './NewBoat';
+import Header from './Header';
 
 /*
 Home page that renders the swimlanes for the Boats. It sorts the boats into their swimlanes and allows them to move easily via a dropdown menu in each card.
@@ -16,8 +17,8 @@ function Home(){
     show: false,
     id: null
   });
-   //New boat pop-up
-   const [showNewBoat, setShowNewBoat] = useState({
+  //New boat pop-up
+  const [showNewBoat, setShowNewBoat] = useState({
     show: false
   });
 
@@ -27,13 +28,13 @@ function Home(){
 
   //Load all of the boats into state.
   const fetchItems = async () =>{
-    const boatsRaw = await fetch("https://is27-comp-backend.azurewebsites.net/boatAPI");
+    const boatsRaw = await fetch('https://is27-comp-backend.azurewebsites.net/boatAPI');
     const boats = await boatsRaw.json();
     setBoats(boats);
-    const guidesRaw = await fetch("https://is27-comp-backend.azurewebsites.net/guidesAPI");
+    const guidesRaw = await fetch('https://is27-comp-backend.azurewebsites.net/guidesAPI');
     const guides = await guidesRaw.json();
     setGuides(guides);  
-  }
+  };
 
   // Gets the change from the dropdown and updates the backend with the swimlane change.
   const handleChange = (event, id) =>{
@@ -52,17 +53,17 @@ function Home(){
       headers: {'Content-Type': 'application/json'},
       body:JSON.stringify({id: id, swimlaneID: swimlaneId})
     };
-    fetch('https://is27-comp-backend.azurewebsites.net/boatAPI/' + id, reqOptions)
-  }
+    fetch('https://is27-comp-backend.azurewebsites.net/boatAPI/' + id, reqOptions);
+  };
 
  
   //Open the New Boat page when clicked
   const openNewBoat = () =>{
-    setShowNewBoat({show:true})
-  }
+    setShowNewBoat({show:true});
+  };
   const closeNewBoat = () =>{
     setShowNewBoat({show:false});
-  }
+  };
   //Lazy Load to add a new boat to ease the fetch request.
   const addNewBoat = (newBoat) => {
     let tempBoats = [ 
@@ -72,9 +73,9 @@ function Home(){
         boatName: newBoat.boatName,
         guideName: newBoat.guideName
       }
-    ]
+    ];
     setBoats(tempBoats);
-  }
+  };
 
   //Cause a popup when delete is pressed to help prevent accidental deletions from the board.
   const handleDelete = (id) =>{
@@ -82,8 +83,7 @@ function Home(){
       show:true,
       id,
     });
-  }
-  
+  };
 
   //If delete is true (confirmed in popup) send DELETE reqest
   const handleDeleteTrue = () =>{
@@ -101,7 +101,7 @@ function Home(){
         headers: {'Content-Type': 'application/json'},
       };
       //send the delete to the API
-      fetch('https://is27-comp-backend.azurewebsites.net/boatAPI/' + popup.id, reqOptions)
+      fetch('https://is27-comp-backend.azurewebsites.net/boatAPI/' + popup.id, reqOptions);
       setPopup({
         show: false,
         id: null,
@@ -116,45 +116,46 @@ function Home(){
     });
   };
 
-return(
-      
-    <div className="container">
-      <div className='row'><button className="btn btn-primary" onClick={openNewBoat}>New Boat</button></div>
-      <div className='row'>
-        <div className='col-sm'>
-          <h2>Docked</h2>
+  return(
+    <> 
+      <Header openNewBoat={openNewBoat} /> 
+      <div className="container">
+        <div className='row'>
+          <div className='col-sm'>
+            <h2>Docked</h2>
             <Swimlanes boats={boats.filter((boat) => parseInt(boat.swimlaneID) === 0) } handleChange={handleChange} handleDelete={handleDelete} />
-        </div>
-        <div className='col-sm'>
-          <h2>Outbound to Sea</h2>
+          </div>
+          <div className='col-sm'>
+            <h2>Outbound to Sea</h2>
             <Swimlanes boats={boats.filter((boat) => parseInt(boat.swimlaneID) === 1)} handleChange={handleChange} handleDelete={handleDelete} />
-        </div>
-        <div className='col-sm'>
-          <h2>Inbound to Harbor</h2>
+          </div>
+          <div className='col-sm'>
+            <h2>Inbound to Harbor</h2>
             <Swimlanes boats={boats.filter((boat) => parseInt(boat.swimlaneID) === 2)} handleChange={handleChange} handleDelete={handleDelete} />
-        </div>
-        <div className='col-sm'>
-          <h2>Maintenance</h2>
+          </div>
+          <div className='col-sm'>
+            <h2>Maintenance</h2>
             <Swimlanes boats={boats.filter((boat) => parseInt(boat.swimlaneID) === 3)} handleChange={handleChange} handleDelete={handleDelete} />
+          </div>
         </div>
-      </div>
-      
-      {showNewBoat.show && (
-        <NewBoat 
-          showNewBoat={showNewBoat}
-          closeNewBoat={closeNewBoat}
-          addNewBoat={addNewBoat}
-          guides={guides} 
-        />
+        
+        {showNewBoat.show && (
+          <NewBoat 
+            showNewBoat={showNewBoat}
+            closeNewBoat={closeNewBoat}
+            addNewBoat={addNewBoat}
+            guides={guides} 
+          />
         )}
-      {popup.show && (
-        <Popup
-          popup={popup}
-          handleDeleteTrue={handleDeleteTrue}
-          handleDeleteFalse={handleDeleteFalse}
-        />
-      )}
-    </div>
+        {popup.show && (
+          <Popup
+            popup={popup}
+            handleDeleteTrue={handleDeleteTrue}
+            handleDeleteFalse={handleDeleteFalse}
+          />
+        )}
+      </div>
+    </>
   );
 }
 

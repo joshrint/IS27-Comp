@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './App.css';
-import Modal from "react-bootstrap/Modal";
-import ModalBody from "react-bootstrap/ModalBody";
-import ModalHeader from "react-bootstrap/ModalHeader";
-import ModalTitle from "react-bootstrap/ModalTitle"
+import './stylesheets/App.css';
+import Modal from 'react-bootstrap/Modal';
+import ModalBody from 'react-bootstrap/ModalBody';
+import ModalHeader from 'react-bootstrap/ModalHeader';
+import ModalTitle from 'react-bootstrap/ModalTitle';
 
 /*
 New boat form. The opperator can add a new boat by adding in the name of the boat and setting the guide who is using it.
@@ -24,15 +24,15 @@ function NewBoat({guides, showNewBoat, closeNewBoat, addNewBoat}) {
     const newBoat = {boatName, guideName};
     fetch('https://is27-comp-backend.azurewebsites.net/boatAPI', {
       method: 'POST',
-      headers:{ "Content-Type": "application/json"},
+      headers:{ 'Content-Type': 'application/json'},
       body: JSON.stringify(newBoat)
     }).then(() =>{
       //Call the add new boat method from Home to add it to state for ease of loading.
       addNewBoat(newBoat);
       //Close the popup
       closeNewBoat();
-    })
-  }
+    });
+  };
 
   return (
     <div>
@@ -52,7 +52,7 @@ function NewBoat({guides, showNewBoat, closeNewBoat, addNewBoat}) {
                 placeholder="Add boat name here..."
                 className="form-control"
                 required
-                />
+              />
               <label htmlFor="guideName" >Guide:</label>
               <select id="guideName" className="form-control" onChange={(e) => setGuideName(e.target.value)} defaultValue="default">
                 <option value="default" disabled>Choose a Guide</option>
@@ -61,7 +61,8 @@ function NewBoat({guides, showNewBoat, closeNewBoat, addNewBoat}) {
                 ))}
               </select>
             </div>
-            <button onClick={closeNewBoat}className="btn btn-outline-danger">Back</button> <button type="submit" className="btn btn-outline-primary">Submit</button>
+            <button type="button" onClick={closeNewBoat}className="btn btn-outline-danger">Back</button> 
+            <button type="submit" className="btn btn-outline-primary">Submit</button>
           </form>
         </ModalBody>
       </Modal>
