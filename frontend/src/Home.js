@@ -48,21 +48,6 @@ function Home(){
     setShowNewBoat({show:false});
   }
 
-  const handleSubmit = (e) =>{
-    e.preventDefault();
-    //const newBoat = {boatName, guideName};
-    console.log(e)
-    /*fetch('https://is27-comp-backend.azurewebsites.net/boatAPI', {
-      method: 'POST',
-      headers:{ "Content-Type": "application/json"},
-      body: JSON.stringify(newBoat)
-    }).then(() =>{
-      console.log("New Boat Added");
-      setShowNewBoat({show:false})
-    })*/
-  }
-
-
   //Cause a popup when delete is pressed to help prevent accidental deletions from the board.
   const handleDelete = (id) =>{
     //console.log(id);
@@ -127,8 +112,7 @@ return(
         <NewBoat 
           showNewBoat={showNewBoat}
           closeNewBoat={closeNewBoat}
-          guides={guides}
-          handleSubmit={handleSubmit} 
+          guides={guides} 
         />
         )}
       {popup.show && (
