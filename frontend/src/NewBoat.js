@@ -9,28 +9,30 @@ import ModalTitle from "react-bootstrap/ModalTitle"
 New boat form. The opperator can add a new boat by adding in the name of the boat and setting the guide who is using it.
 There is an option of N/A for the guide.
 */
-function NewBoat({guides, showNewBoat, closeNewBoat}) {
+function NewBoat({guides, showNewBoat, closeNewBoat, addNewBoat}) {
 
  
   //Setup a default for the boatname to ensure that it is a valid output
   const [boatName, setBoatName] = useState('');
-  const [guideName, setGuideName] = useState('');
   //Store the guides for the dropdown in the form.
+  const [guideName, setGuideName] = useState('');
   
+  //Submit the form to the backend to add to the list of boats.
   const handleSubmit = (e) =>{
     e.preventDefault();
+    //Hold the new boat information to pass to the backend. ID and Swimlane not required since it is set by the backend.
     const newBoat = {boatName, guideName};
-    console.log(e.value)
     fetch('https://is27-comp-backend.azurewebsites.net/boatAPI', {
       method: 'POST',
       headers:{ "Content-Type": "application/json"},
       body: JSON.stringify(newBoat)
     }).then(() =>{
-      console.log("New Boat Added");
+      //Call the add new boat method from Home to add it to state for ease of loading.
+      addNewBoat(newBoat);
+      //Close the popup
       closeNewBoat();
     })
   }
-  
 
   return (
     <div>
