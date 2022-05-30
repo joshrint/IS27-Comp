@@ -65,10 +65,14 @@ function Home(){
   }
   //Lazy Load to add a new boat to ease the fetch request.
   const addNewBoat = (newBoat) => {
-    newBoat.swimlaneID = 0;
-    newBoat.id = boats[boats.length -1 ].id + 1;
-    let tempBoats = boats;
-    tempBoats.push(newBoat);
+    let tempBoats = [ 
+      ...boats, {
+        id: boats[boats.length -1 ].id + 1,
+        swimlaneID: 0,
+        boatName: newBoat.boatName,
+        guideName: newBoat.guideName
+      }
+    ]
     setBoats(tempBoats);
   }
 
@@ -115,6 +119,7 @@ function Home(){
 return(
       
     <div className="container">
+      <div className='row'><button className="btn btn-primary" onClick={openNewBoat}>New Boat</button></div>
       <div className='row'>
         <div className='col-sm'>
           <h2>Docked</h2>
@@ -133,7 +138,7 @@ return(
             <Swimlanes boats={boats.filter((boat) => parseInt(boat.swimlaneID) === 3)} handleChange={handleChange} handleDelete={handleDelete} />
         </div>
       </div>
-      <div className='row'><button className="btn btn-primary" onClick={openNewBoat}>New Boat</button></div>
+      
       {showNewBoat.show && (
         <NewBoat 
           showNewBoat={showNewBoat}

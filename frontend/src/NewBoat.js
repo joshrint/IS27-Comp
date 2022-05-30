@@ -49,6 +49,7 @@ function NewBoat({guides, showNewBoat, closeNewBoat, addNewBoat}) {
                 type="text"
                 value={boatName}
                 onChange={(e) => setBoatName(e.target.value)}
+                placeholder="Add boat name here..."
                 className="form-control"
                 required
                 />
