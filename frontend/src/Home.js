@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import {Link} from 'react-router-dom';
 import Swimlanes from './Swimlanes';
 import Popup from './Popup';
+import NewBoat from './NewBoat';
 
 /*
 Home page that renders the swimlanes for the Boats. It sorts the boats into their swimlanes and allows them to move easily via a dropdown menu in each card.
@@ -14,12 +14,16 @@ function Home(){
   });
 
   const [boats, setBoats] = useState([]);
-  
+  const [guides, setGuides] = useState([]);
+
   //Load all of the boats into state.
   const fetchItems = async () =>{
     const boatsRaw = await fetch("https://is27-comp-backend.azurewebsites.net/boatAPI");
     const boats = await boatsRaw.json();
     setBoats(boats);
+    const guidesRaw = await fetch("https://is27-comp-backend.azurewebsites.net/guidesAPI");
+    const guides = await guidesRaw.json();
+    setGuides(guides);
     
   }
   // Gets the change from the dropdown and updates the backend with the swimlane change.
@@ -32,6 +36,34 @@ function Home(){
     fetch('https://is27-comp-backend.azurewebsites.net/boatAPI/' + id, reqOptions)
   }
 
+  //New boat pop-up
+  const [showNewBoat, setShowNewBoat] = useState({
+    show: false
+  });
+  //Open the New Boat page when clicked
+  const openNewBoat = () =>{
+    setShowNewBoat({show:true})
+  }
+  const closeNewBoat = () =>{
+    setShowNewBoat({show:false});
+  }
+
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    //const newBoat = {boatName, guideName};
+    console.log(e)
+    /*fetch('https://is27-comp-backend.azurewebsites.net/boatAPI', {
+      method: 'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(newBoat)
+    }).then(() =>{
+      console.log("New Boat Added");
+      setShowNewBoat({show:false})
+    })*/
+  }
+
+
+  //Cause a popup when delete is pressed to help prevent accidental deletions from the board.
   const handleDelete = (id) =>{
     //console.log(id);
     setPopup({
@@ -40,11 +72,13 @@ function Home(){
     });
     console.log(popup.show);
   }
-  //Delete Popup
+  //Delete Popup to confirm the press of the delete button.
   const [popup, setPopup] = useState({
     show: false,
     id: null
   })
+
+  //If delete is true (confirmed in popup) send DELETE reqest
   const handleDeleteTrue = () =>{
     if (popup.show && popup.id) {
       const reqOptions = {
@@ -58,8 +92,8 @@ function Home(){
       });
     }
   };
+  // If false just hide the popup
   const handleDeleteFalse = () => {
-    console.log('Cancel');
     setPopup({
       show: false,
       id: null,
@@ -88,7 +122,15 @@ return(
             <Swimlanes boats={boats.filter((boat) => parseInt(boat.swimlaneID) === 3)} handleChange={handleChange} handleDelete={handleDelete} />
         </div>
       </div>
-      <div className='row'><Link to="/new"className="btn btn-primary">New Boat</Link></div>
+      <div className='row'><button className="btn btn-primary" onClick={openNewBoat}>New Boat</button></div>
+      {showNewBoat.show && (
+        <NewBoat 
+          showNewBoat={showNewBoat}
+          closeNewBoat={closeNewBoat}
+          guides={guides}
+          handleSubmit={handleSubmit} 
+        />
+        )}
       {popup.show && (
         <Popup
           popup={popup}
