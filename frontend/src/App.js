@@ -1,15 +1,16 @@
 import './App.css';
-import {BrowserRouter as Router, Switch, Routes, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Home from './Home';
-import EditBoat from './EditBoat';
+import NewBoat from './NewBoat';
 
+//Router Homepage
 function App() {
   return (
       <Router>
         <div className="App">
           <Routes>
-            <Route path="/" element={<Home/>} />
-            <Route path="/edit/:id" element={<EditBoat/>} />
+            <Route exact path="/" element={<Home/>} />
+            <Route path="/new" element={<NewBoat/>} />
           </Routes>
         </div>
       </Router>
